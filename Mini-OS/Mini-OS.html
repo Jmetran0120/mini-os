@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini OS</title>
+    <link rel="stylesheet" href="Mini-OS.css">
+</head>
+
+<body>
+    <!-- Boot Screen -->
+    <div id="boot-screen" class="screen">
+        <h1>Booting MiniOS...</h1>
+    </div>
+
+    <!-- Shutdown Screen -->
+    <div id="shutdown-screen" class="screen hidden">
+        <div class="shutdown-content">
+            <div class="shutdown-loader"></div>
+            <h1>Shutting down...</h1>
+            <p class="shutdown-message">Please wait while the system shuts down</p>
+        </div>
+    </div>
+
+    <!-- Desktop -->
+    <div id="desktop" style="display:none;">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="os-name">NEBULA OS</div>
+            <div class="top-bar-right">
+                <span id="top-clock"></span>
+            </div>
+        </div>
+        
+        <div class="taskbar">
+            <div class="taskbar-left">
+                <button class="app-btn" onclick="openWindow('file-explorer')">🗂 File Explorer</button>
+                <button class="app-btn" onclick="openWindow('settings')">⚙️ Settings</button>
+                <button class="app-btn" onclick="openWindow('calculator')">🧮 Calculator</button>
+                <button class="app-btn" onclick="openWindow('wallpaper')">🖼 Wallpaper</button>
+                <button class="app-btn" onclick="openWindow('task-manager')">📋 Task Manager</button>
+                <button class="app-btn" onclick="openWindow('terminal')">💻 Terminal</button>
+                <button id="logout-btn" style="display:none;">Logout</button>
+                <div id="minimized-icons" class="minimized-icons"></div>
+            </div>
+            <div class="taskbar-right">
+                <span id="clock"></span>
+                <button id="shutdown-btn">⏻ Shutdown</button>
+            </div>
+        </div>
+
+        <!-- File Explorer -->
+        <div id="file-explorer" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🗂 File Explorer</span>
+                <button class="min-btn" onclick="minimizeWindow('file-explorer')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('file-explorer')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('file-explorer')">X</button>
+            </div>
+            <div class="window-body">
+                <ul id="file-list"></ul>
+                <input type="text" id="new-file-name" placeholder="Enter file name">
+                <button onclick="createFile()">Create File</button>
+                <button onclick="deleteFile()">Delete Selected File</button>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div id="settings" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>⚙️ Settings</span>
+                <button class="min-btn" onclick="minimizeWindow('settings')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('settings')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('settings')">X</button>
+            </div>
+            <div class="window-body">
+                <label>Theme:</label>
+                <select id="theme-select" onchange="changeTheme()">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+                <br><br>
+                <label>Username:</label>
+                <input type="text" id="username-input" placeholder="Enter name">
+                <button onclick="saveUsername()">Save</button>
+            </div>
+        </div>
+
+        <!-- Task Manager -->
+        <div id="task-manager" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>📋 Task Manager</span>
+                <button class="min-btn" onclick="minimizeWindow('task-manager')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('task-manager')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('task-manager')">X</button>
+            </div>
+            <div class="window-body">
+                <ul id="task-list"></ul>
+                <button onclick="updateTaskList()">Refresh</button>
+            </div>
+        </div>
+
+        <!-- Calculator -->
+        <div id="calculator" class="window hidden" style="width: 380px; height: 480px;">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🧮 Calculator</span>
+                <button class="min-btn" onclick="minimizeWindow('calculator')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('calculator')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('calculator')">X</button>
+            </div>
+            <div class="window-body">
+                <input type="text" id="calc-display" readonly>
+                <div id="calc-buttons">
+                    <button class="clear" onclick="clearCalc()">C</button>
+                    <button onclick="appendCalc('7')">7</button>
+                    <button onclick="appendCalc('8')">8</button>
+                    <button onclick="appendCalc('9')">9</button>
+                    <button class="operator" onclick="appendCalc('/')">÷</button>
+                    <button onclick="appendCalc('4')">4</button>
+                    <button onclick="appendCalc('5')">5</button>
+                    <button onclick="appendCalc('6')">6</button>
+                    <button class="operator" onclick="appendCalc('*')">×</button>
+                    <button onclick="appendCalc('1')">1</button>
+                    <button onclick="appendCalc('2')">2</button>
+                    <button onclick="appendCalc('3')">3</button>
+                    <button class="operator" onclick="appendCalc('-')">−</button>
+                    <button onclick="appendCalc('0')">0</button>
+                    <button onclick="appendCalc('.')">.</button>
+                    <button class="operator" onclick="appendCalc('+')">+</button>
+                    <button class="equals" onclick="calculateResult()">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallpaper -->
+        <div id="wallpaper" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🖼 Wallpaper Selector</span>
+                <button class="min-btn" onclick="minimizeWindow('wallpaper')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('wallpaper')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('wallpaper')">X</button>
+            </div>
+            <div class="window-body" id="wallpaper-options">
+                <img src="Windows.jpg" onclick="setWallpaper(this.src)">
+                <img src="Windows 2.jpg" onclick="setWallpaper(this.src)">
+                <img src="Windows 3.jpg" onclick="setWallpaper(this.src)">
+            </div>
+        </div>
+
+        <!-- ✅ Text Editor -->
+        <div id="text-editor" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>📝 Text Editor</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('text-editor')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('text-editor')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('text-editor')">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <textarea id="editor-content" style="width:100%;height:100px;"></textarea><br>
+                <button onclick="saveFileContent()">Save</button>
+            </div>
+        </div>
+
+        <!-- Terminal -->
+        <div id="terminal" class="window hidden" style="width: 600px; height: 450px;">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>💻 Terminal</span>
+                <button class="min-btn" onclick="minimizeWindow('terminal')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('terminal')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('terminal')">X</button>
+            </div>
+            <div class="window-body terminal-body">
+                <div id="terminal-output"></div>
+                <div class="terminal-input-line">
+                    <span class="terminal-prompt">nebula@os:~$</span>
+                    <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="Mini-OS.js"></script>
+</body>
+
+</html>
