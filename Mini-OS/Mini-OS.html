@@ -32,7 +32,7 @@
                 <span id="top-clock"></span>
             </div>
         </div>
-        
+
         <div class="taskbar">
             <div class="taskbar-left">
                 <button class="app-btn" onclick="openWindow('file-explorer')">🗂 File Explorer</button>
@@ -41,6 +41,7 @@
                 <button class="app-btn" onclick="openWindow('wallpaper')">🖼 Wallpaper</button>
                 <button class="app-btn" onclick="openWindow('task-manager')">📋 Task Manager</button>
                 <button class="app-btn" onclick="openWindow('terminal')">💻 Terminal</button>
+                <button class="app-btn" onclick="openWindow('music-player')">🎵 Music</button>
                 <button id="logout-btn" style="display:none;">Logout</button>
                 <div id="minimized-icons" class="minimized-icons"></div>
             </div>
@@ -148,7 +149,7 @@
             </div>
         </div>
 
-        <!-- ✅ Text Editor -->
+        <!--  Text Editor -->
         <div id="text-editor" class="window hidden">
             <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
                 <span>📝 Text Editor</span>
@@ -180,7 +181,29 @@
                 </div>
             </div>
         </div>
-
+        <!-- Music Player -->
+        <div id="music-player" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🎵 Music Player</span>
+                <button class="min-btn" onclick="minimizeWindow('music-player')">—</button>
+                <button class="max-btn" onclick="maximizeWindow('music-player')">⬜</button>
+                <button class="close-btn" onclick="closeWindow('music-player')">X</button>
+            </div>
+            <div class="window-body" style="text-align:center;">
+                <select id="track-list">
+                    <option value="assets/music/Lovin on Me.mp3">Jack Harlow - Lovin on Me</option>
+                    <option value="assets/music/ISIS.mp3">Joyner Lucas - Isis</option>
+                    <option value="assets/music/DYLHITM.mp3">Niki - Do you like her in the morning</option>
+                    <option value="assets/music/Moon River.mp3">Frank Ocean - Moon River</option>
+                </select>
+                <br><br>
+                <button onclick="playMusic()">▶️ Play</button>
+                <button onclick="pauseMusic()">⏸️ Pause</button>
+                <br><br>
+                <label>Volume: </label>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+            </div>
+        </div>
     </div>
 
     <script src="Mini-OS.js"></script>

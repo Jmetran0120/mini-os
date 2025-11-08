@@ -30,7 +30,7 @@ function updateClock() {
     const date = now.toLocaleDateString();
     const topClock = document.getElementById('top-clock');
     const taskbarClock = document.getElementById('clock');
-    
+
     if (topClock) {
         topClock.textContent = time;
     }
@@ -45,7 +45,7 @@ function openWindow(id) {
     const win = document.getElementById(id);
     win.classList.remove('hidden');
     addResizeHandles(win);
-    
+
     // Initialize terminal if it's being opened
     if (id === 'terminal') {
         setTimeout(() => {
@@ -101,16 +101,37 @@ function maximizeWindow(id) {
 
 // --- File Explorer ---
 let files = JSON.parse(localStorage.getItem('files')) || [];
-let selectedFile = null; // ✅ track selection
+let selectedFile = null;
 
 function createFile() {
-    const name = document.getElementById('new-file-name').value.trim();
-    if (!name) return alert('Enter file name!');
-    files.push({ name, content: '' }); // ✅ store as object
-    document.getElementById('new-file-name').value = '';
+    const input = document.getElementById('new-file-name');
+    const enteredName = input.value.trim();
+    if (!enteredName) return alert('Enter file name!');
+
+    const existingNames = files.map(f => f.name);
+    let name = enteredName;
+    let counter = 1;
+
+    // Keep looping while the name already exists
+    while (existingNames.includes(name)) {
+        const dotIndex = enteredName.lastIndexOf('.');
+        if (dotIndex !== -1) {
+            const base = enteredName.substring(0, dotIndex);
+            const ext = enteredName.substring(dotIndex);
+            name = `${base}(${counter})${ext}`;
+        } else {
+            name = `${enteredName}(${counter})`;
+        }
+        counter++;
+    }
+
+    // Add the new file
+    files.push({ name, content: '' });
+    input.value = '';
     renderFileList();
     saveFiles();
 }
+
 
 function deleteFile() {
     if (!selectedFile) return alert('Select a file to delete.');
@@ -184,6 +205,8 @@ function changeTheme() {
 function saveUsername() {
     const name = document.getElementById('username-input').value.trim();
     if (!name) return alert('Please enter a username.');
+
+    localStorage.setItem('username', name);
     alert(`Username saved as: ${name}`);
 }
 
@@ -220,14 +243,14 @@ function drag(e) {
     if (!currentWindow) return;
     const rect = currentWindow.getBoundingClientRect();
     const desktop = document.getElementById('desktop').getBoundingClientRect();
-    
+
     let newLeft = e.clientX - offsetX;
     let newTop = e.clientY - offsetY;
-    
+
     // Constrain to desktop bounds
     newLeft = Math.max(0, Math.min(newLeft, desktop.width - rect.width));
     newTop = Math.max(40, Math.min(newTop, desktop.height - 100 - rect.height)); // 40px for top bar, 100px for taskbar
-    
+
     currentWindow.style.left = newLeft + 'px';
     currentWindow.style.top = newTop + 'px';
 }
@@ -248,9 +271,9 @@ let startLeft = 0, startTop = 0;
 function addResizeHandles(windowElement) {
     // Remove existing handles if any
     windowElement.querySelectorAll('.window-resize-handle').forEach(h => h.remove());
-    
+
     if (windowElement.classList.contains('maximized')) return;
-    
+
     const handles = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
     handles.forEach(dir => {
         const handle = document.createElement('div');
@@ -264,34 +287,34 @@ function startResize(e, windowElement, direction) {
     if (isShuttingDown) return;
     e.stopPropagation();
     if (windowElement.classList.contains('maximized')) return;
-    
+
     resizingWindow = windowElement;
     resizeDirection = direction;
     startX = e.clientX;
     startY = e.clientY;
-    
+
     const rect = windowElement.getBoundingClientRect();
     startWidth = rect.width;
     startHeight = rect.height;
     startLeft = rect.left;
     startTop = rect.top;
-    
+
     document.addEventListener('mousemove', doResize);
     document.addEventListener('mouseup', stopResize);
 }
 
 function doResize(e) {
     if (!resizingWindow) return;
-    
+
     const desktop = document.getElementById('desktop').getBoundingClientRect();
     const deltaX = e.clientX - startX;
     const deltaY = e.clientY - startY;
-    
+
     let newWidth = startWidth;
     let newHeight = startHeight;
     let newLeft = startLeft;
     let newTop = startTop;
-    
+
     // Handle different resize directions
     if (resizeDirection.includes('e')) {
         newWidth = Math.max(200, Math.min(startWidth + deltaX, desktop.width - startLeft));
@@ -307,11 +330,11 @@ function doResize(e) {
         newHeight = Math.max(150, Math.min(startHeight - deltaY, startTop + startHeight - 40));
         newTop = startTop + (startHeight - newHeight);
     }
-    
+
     // Constrain to desktop bounds
     newLeft = Math.max(0, Math.min(newLeft, desktop.width - newWidth));
     newTop = Math.max(40, Math.min(newTop, desktop.height - 100 - newHeight));
-    
+
     resizingWindow.style.width = newWidth + 'px';
     resizingWindow.style.height = newHeight + 'px';
     resizingWindow.style.left = newLeft + 'px';
@@ -361,44 +384,44 @@ let isShuttingDown = false;
 function shutdownSystem() {
     if (isShuttingDown) return;
     isShuttingDown = true;
-    
+
     const desktop = document.getElementById('desktop');
     const shutdownScreen = document.getElementById('shutdown-screen');
     const shutdownMessage = shutdownScreen.querySelector('.shutdown-message');
-    
+
     // Hide desktop and show shutdown screen
     desktop.style.display = 'none';
     shutdownScreen.classList.remove('hidden');
-    
+
     // Close all windows
     document.querySelectorAll('.window').forEach(win => {
         win.classList.add('hidden');
     });
-    
+
     // Stop clock updates
     if (window.clockInterval) {
         clearInterval(window.clockInterval);
     }
-    
+
     // Disable all interactions
     document.querySelectorAll('button').forEach(btn => {
         btn.disabled = true;
         btn.style.pointerEvents = 'none';
     });
-    
+
     // Shutdown animation sequence
     setTimeout(() => {
         shutdownMessage.textContent = 'Saving system state...';
     }, 1000);
-    
+
     setTimeout(() => {
         shutdownMessage.textContent = 'Closing applications...';
     }, 2500);
-    
+
     setTimeout(() => {
         shutdownMessage.textContent = 'Finalizing shutdown...';
     }, 4000);
-    
+
     setTimeout(() => {
         shutdownMessage.textContent = 'System shutdown complete';
         shutdownScreen.querySelector('h1').textContent = 'Shutdown Complete';
@@ -413,21 +436,21 @@ let terminalHistoryIndex = -1;
 function initTerminal() {
     const terminalInput = document.getElementById('terminal-input');
     const terminalOutput = document.getElementById('terminal-output');
-    
+
     if (!terminalInput || !terminalOutput) return;
-    
+
     // Welcome message
     addTerminalOutput('NEBULA OS Terminal v1.0');
     addTerminalOutput('Type "help" for available commands.');
     addTerminalOutput('');
-    
+
     // Handle input
     terminalInput.addEventListener('keydown', (e) => {
         if (isShuttingDown) {
             e.preventDefault();
             return;
         }
-        
+
         if (e.key === 'Enter') {
             e.preventDefault();
             const command = terminalInput.value.trim();
@@ -456,7 +479,7 @@ function initTerminal() {
             }
         }
     });
-    
+
     // Focus input when terminal opens
     terminalInput.focus();
 }
@@ -464,7 +487,7 @@ function initTerminal() {
 function addTerminalOutput(text, className = '') {
     const terminalOutput = document.getElementById('terminal-output');
     if (!terminalOutput) return;
-    
+
     const line = document.createElement('div');
     line.className = `terminal-line ${className}`;
     line.textContent = text;
@@ -473,25 +496,26 @@ function addTerminalOutput(text, className = '') {
 }
 
 function executeCommand(command) {
-    addTerminalOutput(`nebula@os:~$ ${command}`);
-    
+    const savedUser = localStorage.getItem('username') || 'nebula';
+    addTerminalOutput(`${savedUser}@nebula:~$ ${command}`);
+
     const parts = command.split(' ');
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
-    
+
     switch (cmd) {
         case 'echo':
             const text = args.join(' ');
             addTerminalOutput(text);
             break;
-            
+
         case 'clear':
             const terminalOutput = document.getElementById('terminal-output');
             if (terminalOutput) {
                 terminalOutput.innerHTML = '';
             }
             break;
-            
+
         case 'help':
             addTerminalOutput('Available commands:');
             addTerminalOutput('  echo <text>     - Display text');
@@ -503,16 +527,17 @@ function executeCommand(command) {
             addTerminalOutput('  pwd             - Show current directory');
             addTerminalOutput('  exit            - Close terminal');
             break;
-            
+
         case 'date':
             const now = new Date();
             addTerminalOutput(now.toString());
             break;
-            
+
         case 'whoami':
-            addTerminalOutput('nebula');
+            const savedUser = localStorage.getItem('username') || 'nebula';
+            addTerminalOutput(savedUser);
             break;
-            
+
         case 'ls':
             const files = JSON.parse(localStorage.getItem('files')) || [];
             if (files.length === 0) {
@@ -523,18 +548,44 @@ function executeCommand(command) {
                 });
             }
             break;
-            
+
         case 'pwd':
             addTerminalOutput('/home/nebula');
             break;
-            
+
         case 'exit':
             closeWindow('terminal');
             break;
-            
+
         default:
             addTerminalOutput(`Command not found: ${cmd}. Type "help" for available commands.`, 'error');
     }
-    
+
     addTerminalOutput('');
 }
+
+let music = new Audio();
+let currentTrack = localStorage.getItem('currentTrack') || 'lofi.mp3';
+music.src = currentTrack;
+music.volume = parseFloat(localStorage.getItem('musicVolume')) || 0.5;
+music.loop = true;
+
+function playMusic() {
+    const track = document.getElementById('track-list').value;
+    if (track !== currentTrack) {
+        currentTrack = track;
+        music.src = track;
+        localStorage.setItem('currentTrack', track);
+    }
+    music.play();
+}
+
+function pauseMusic() {
+    music.pause();
+}
+
+document.getElementById('volume-slider').addEventListener('input', e => {
+    music.volume = e.target.value;
+    localStorage.setItem('musicVolume', e.target.value);
+});
+
