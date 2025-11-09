@@ -11,12 +11,17 @@
 <body>
     <!-- Boot Screen -->
     <div id="boot-screen" class="screen">
-        <h1>Booting MiniOS...</h1>
+        <div class="boot-content">
+            <img src="logo.png" alt="Logo" class="boot-logo">
+            <div class="boot-loader"></div>
+            <h1 class="boot-text">Booting MiniOS...</h1>
+        </div>
     </div>
 
     <!-- Shutdown Screen -->
     <div id="shutdown-screen" class="screen hidden">
         <div class="shutdown-content">
+            <img src="logo.png" alt="Logo" class="shutdown-logo">
             <div class="shutdown-loader"></div>
             <h1>Shutting down...</h1>
             <p class="shutdown-message">Please wait while the system shuts down</p>
@@ -25,24 +30,37 @@
 
     <!-- Desktop -->
     <div id="desktop" style="display:none;">
+        <!-- Centered Logo -->
+        <div class="desktop-logo-container">
+            <img src="logo.png" alt="Logo" class="desktop-logo">
+        </div>
+
         <!-- Top Bar -->
         <div class="top-bar">
-            <div class="os-name">NEBULA OS</div>
-            <div class="top-bar-right">
-                <span id="top-clock"></span>
+            <div class="top-bar-left">
+                <img src="logo.png" alt="Logo" class="top-bar-logo">
+                <div class="os-name">MINI OS</div>
             </div>
         </div>
 
         <div class="taskbar">
             <div class="taskbar-left">
-                <button class="app-btn" onclick="openWindow('file-explorer')">🗂 File Explorer</button>
+                <div class="taskbar-logo-section">
+                    <img src="logo.png" alt="Logo" class="taskbar-logo">
+                    <span class="taskbar-os-name">M</span>
+                </div>
+                <div class="taskbar-divider"></div>
+                <button class="app-btn" onclick="openWindow('memory-manager')">💾 Memory Manager</button>
+                <button class="app-btn" onclick="openWindow('processor-manager')">⚡ Processor Manager</button>
+                <button class="app-btn" onclick="openWindow('device-manager')">🖥️ Device Manager</button>
+                <button class="app-btn" onclick="openWindow('file-manager')">📁 File Manager</button>
+                <button class="app-btn" onclick="openWindow('network-manager')">🌐 Network Manager</button>
+                <button class="app-btn" onclick="openWindow('security-manager')">🔒 Security Manager</button>
+                <div class="taskbar-divider"></div>
                 <button class="app-btn" onclick="openWindow('settings')">⚙️ Settings</button>
                 <button class="app-btn" onclick="openWindow('calculator')">🧮 Calculator</button>
-                <button class="app-btn" onclick="openWindow('wallpaper')">🖼 Wallpaper</button>
-                <button class="app-btn" onclick="openWindow('task-manager')">📋 Task Manager</button>
                 <button class="app-btn" onclick="openWindow('terminal')">💻 Terminal</button>
                 <button class="app-btn" onclick="openWindow('music-player')">🎵 Music</button>
-                <button id="logout-btn" style="display:none;">Logout</button>
                 <div id="minimized-icons" class="minimized-icons"></div>
             </div>
             <div class="taskbar-right">
@@ -51,19 +69,247 @@
             </div>
         </div>
 
-        <!-- File Explorer -->
-        <div id="file-explorer" class="window hidden">
+        <!-- File Manager -->
+        <div id="file-manager" class="window hidden">
             <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
-                <span>🗂 File Explorer</span>
-                <button class="min-btn" onclick="minimizeWindow('file-explorer')">—</button>
-                <button class="max-btn" onclick="maximizeWindow('file-explorer')">⬜</button>
-                <button class="close-btn" onclick="closeWindow('file-explorer')">X</button>
+                <span>📁 File Manager</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('file-manager')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('file-manager')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('file-manager')">X</button>
+                </div>
             </div>
             <div class="window-body">
-                <ul id="file-list"></ul>
-                <input type="text" id="new-file-name" placeholder="Enter file name">
-                <button onclick="createFile()">Create File</button>
-                <button onclick="deleteFile()">Delete Selected File</button>
+                <div class="manager-header">
+                    <h2>File Manager</h2>
+                    <p class="manager-description">Handles file storage and access</p>
+                </div>
+                <div class="manager-content">
+                    <ul id="file-list"></ul>
+                    <div class="file-actions">
+                        <input type="text" id="new-file-name" placeholder="Enter file name">
+                        <button onclick="createFile()">Create File</button>
+                        <button onclick="deleteFile()">Delete Selected File</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory Manager -->
+        <div id="memory-manager" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>💾 Memory Manager</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('memory-manager')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('memory-manager')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('memory-manager')">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="manager-header">
+                    <h2>Memory Manager</h2>
+                    <p class="manager-description">Allocates and tracks RAM usage</p>
+                </div>
+                <div class="manager-content">
+                    <div class="memory-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Total RAM</div>
+                            <div class="stat-value" id="total-ram">8.0 GB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Used RAM</div>
+                            <div class="stat-value" id="used-ram">3.2 GB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Available RAM</div>
+                            <div class="stat-value" id="available-ram">4.8 GB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Usage</div>
+                            <div class="stat-value" id="ram-usage">40%</div>
+                        </div>
+                    </div>
+                    <div class="memory-chart">
+                        <div class="chart-label">RAM Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ram-progress" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    <div class="memory-processes">
+                        <h3>Top Memory Processes</h3>
+                        <ul id="memory-process-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processor Manager -->
+        <div id="processor-manager" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>⚡ Processor Manager</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('processor-manager')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('processor-manager')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('processor-manager')">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="manager-header">
+                    <h2>Processor Manager</h2>
+                    <p class="manager-description">Controls CPU use and process scheduling</p>
+                </div>
+                <div class="manager-content">
+                    <div class="cpu-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">CPU Usage</div>
+                            <div class="stat-value" id="cpu-usage">25%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Cores</div>
+                            <div class="stat-value" id="cpu-cores">4</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Frequency</div>
+                            <div class="stat-value" id="cpu-frequency">2.4 GHz</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Processes</div>
+                            <div class="stat-value" id="cpu-processes">42</div>
+                        </div>
+                    </div>
+                    <div class="cpu-chart">
+                        <div class="chart-label">CPU Usage</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="cpu-progress" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <div class="cpu-processes">
+                        <h3>Top CPU Processes</h3>
+                        <ul id="cpu-process-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Manager -->
+        <div id="device-manager" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🖥️ Device Manager</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('device-manager')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('device-manager')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('device-manager')">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="manager-header">
+                    <h2>Device Manager</h2>
+                    <p class="manager-description">Manages input/output devices</p>
+                </div>
+                <div class="manager-content">
+                    <div class="device-list" id="device-list">
+                        <!-- Devices will be populated by JS -->
+                    </div>
+                    <button onclick="refreshDevices()" class="refresh-btn">🔄 Refresh Devices</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Manager -->
+        <div id="network-manager" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🌐 Network Manager</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('network-manager')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('network-manager')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('network-manager')">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="manager-header">
+                    <h2>Network Manager</h2>
+                    <p class="manager-description">Manages communication and data transfer</p>
+                </div>
+                <div class="manager-content">
+                    <div class="network-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" id="network-status">Connected</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Download Speed</div>
+                            <div class="stat-value" id="download-speed">45.2 Mbps</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Upload Speed</div>
+                            <div class="stat-value" id="upload-speed">12.8 Mbps</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Data Sent</div>
+                            <div class="stat-value" id="data-sent">2.4 GB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Data Received</div>
+                            <div class="stat-value" id="data-received">8.7 GB</div>
+                        </div>
+                    </div>
+                    <div class="network-connections">
+                        <h3>Active Connections</h3>
+                        <ul id="network-connections-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Manager -->
+        <div id="security-manager" class="window hidden">
+            <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
+                <span>🔒 Security Manager</span>
+                <div class="window-buttons">
+                    <button class="min-btn" onclick="minimizeWindow('security-manager')">—</button>
+                    <button class="max-btn" onclick="maximizeWindow('security-manager')">⬜</button>
+                    <button class="close-btn" onclick="closeWindow('security-manager')">X</button>
+                </div>
+            </div>
+            <div class="window-body">
+                <div class="manager-header">
+                    <h2>Security Manager</h2>
+                    <p class="manager-description">Protects system and user data</p>
+                </div>
+                <div class="manager-content">
+                    <div class="security-status">
+                        <div class="security-card">
+                            <div class="security-icon">🛡️</div>
+                            <div class="security-info">
+                                <div class="security-label">System Status</div>
+                                <div class="security-value secure">Secure</div>
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <div class="security-icon">🔐</div>
+                            <div class="security-info">
+                                <div class="security-label">Firewall</div>
+                                <div class="security-value active">Active</div>
+                            </div>
+                        </div>
+                        <div class="security-card">
+                            <div class="security-icon">🦠</div>
+                            <div class="security-info">
+                                <div class="security-label">Threats Detected</div>
+                                <div class="security-value">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="security-scan">
+                        <h3>Security Scan</h3>
+                        <button onclick="runSecurityScan()" class="scan-btn">🔍 Run Full System Scan</button>
+                        <div id="scan-results" class="scan-results"></div>
+                    </div>
+                    <div class="security-logs">
+                        <h3>Security Logs</h3>
+                        <ul id="security-logs-list"></ul>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -176,7 +422,7 @@
             <div class="window-body terminal-body">
                 <div id="terminal-output"></div>
                 <div class="terminal-input-line">
-                    <span class="terminal-prompt">nebula@os:~$</span>
+                    <span class="terminal-prompt">user@minios:~$</span>
                     <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false">
                 </div>
             </div>
