@@ -1,0 +1,125 @@
+.notification-container {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+.notification {
+  background: rgba(10, 10, 15, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease;
+  min-width: 300px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.notification:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.notification-success {
+  border-left: 4px solid rgba(34, 197, 94, 0.8);
+}
+
+.notification-error {
+  border-left: 4px solid rgba(239, 68, 68, 0.8);
+}
+
+.notification-warning {
+  border-left: 4px solid rgba(251, 146, 60, 0.8);
+}
+
+.notification-info {
+  border-left: 4px solid rgba(99, 102, 241, 0.8);
+}
+
+.notification-icon {
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.notification-success .notification-icon {
+  color: rgba(34, 197, 94, 0.9);
+}
+
+.notification-error .notification-icon {
+  color: rgba(239, 68, 68, 0.9);
+}
+
+.notification-warning .notification-icon {
+  color: rgba(251, 146, 60, 0.9);
+}
+
+.notification-info .notification-icon {
+  color: rgba(99, 102, 241, 0.9);
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-message {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.notification-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.notification-close:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+

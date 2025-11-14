@@ -70,7 +70,7 @@
         </div>
 
         <!-- File Manager -->
-        <div id="file-manager" class="window hidden">
+        <div id="file-manager" class="window hidden file-manager-window" style="width: 800px; height: 550px;">
             <div class="window-header" onmousedown="startDrag(event, this.parentElement)">
                 <span>📁 File Manager</span>
                 <div class="window-buttons">
@@ -79,20 +79,48 @@
                     <button class="close-btn" onclick="closeWindow('file-manager')">X</button>
                 </div>
             </div>
-            <div class="window-body">
-                <div class="manager-header">
-                    <h2>File Manager</h2>
-                    <p class="manager-description">Handles file storage and access</p>
+            <div class="window-body file-manager-body">
+                <!-- Simple Toolbar -->
+                <div class="fm-toolbar">
+                    <button class="fm-btn" onclick="finderNavigateBack()" id="finder-back-btn" title="Back">◀ Back</button>
+                    <button class="fm-btn" onclick="finderNavigateForward()" id="finder-forward-btn" title="Forward">Forward ▶</button>
+                    <div class="fm-divider"></div>
+                    <button class="fm-btn" onclick="finderCreateNewFolder()" title="New Folder">📁 New Folder</button>
+                    <button class="fm-btn" onclick="finderCreateNewFile()" title="New File">📄 New File</button>
+                    <button class="fm-btn" onclick="finderDeleteSelected()" id="finder-delete-btn" title="Delete">🗑️ Delete</button>
+                    <div class="fm-divider"></div>
+                    <input type="text" id="finder-search-input" class="fm-search" placeholder="Search files..." onkeyup="finderSearch(this.value)">
                 </div>
-                <div class="manager-content">
-                    <ul id="file-list"></ul>
-                    <div class="file-actions">
-                        <input type="text" id="new-file-name" placeholder="Enter file name">
-                        <button onclick="createFile()">Create File</button>
-                        <button onclick="deleteFile()">Delete Selected File</button>
-                    </div>
+                
+                <!-- Path Bar -->
+                <div class="fm-path-bar" id="finder-path-bar">
+                    <span class="fm-path-item" onclick="finderNavigateTo('/')">🏠 Home</span>
+                </div>
+                
+                <!-- File Area -->
+                <div class="fm-file-area" id="finder-file-area">
+                    <div class="fm-grid" id="file-grid-view"></div>
+                </div>
+                
+                <!-- Status Bar -->
+                <div class="fm-statusbar" id="finder-statusbar">
+                    <span id="finder-item-count">0 items</span>
+                    <span id="finder-selected-count" style="display: none;"></span>
                 </div>
             </div>
+        </div>
+
+        <!-- Context Menu -->
+        <div id="finder-context-menu" class="fm-context-menu hidden">
+            <div class="fm-context-item" onclick="finderContextNewFolder()">📁 New Folder</div>
+            <div class="fm-context-item" onclick="finderContextNewFile()">📄 New File</div>
+            <div class="fm-context-divider"></div>
+            <div class="fm-context-item" onclick="finderContextRename()">✏️ Rename</div>
+            <div class="fm-context-item" onclick="finderContextDuplicate()">📋 Duplicate</div>
+            <div class="fm-context-divider"></div>
+            <div class="fm-context-item" onclick="finderContextMoveToTrash()">🗑️ Delete</div>
+            <div class="fm-context-divider"></div>
+            <div class="fm-context-item" onclick="finderContextGetInfo()">ℹ️ Get Info</div>
         </div>
 
         <!-- Memory Manager -->

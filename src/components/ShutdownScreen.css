@@ -1,0 +1,81 @@
+.shutdown-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #0a0a0f 0%, #2a1a1a 50%, #0a0a0f 100%);
+  position: relative;
+  z-index: 10000;
+}
+
+.shutdown-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.shutdown-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.shutdown-logo {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.3));
+  opacity: 0.8;
+}
+
+.shutdown-content h1 {
+  font-size: 2em;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 20px rgba(239, 68, 68, 0.3);
+  margin: 0;
+}
+
+.shutdown-message {
+  font-size: 1.1em;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1px;
+  margin: 0;
+  min-height: 30px;
+  transition: all 0.3s ease;
+}
+
+.shutdown-loader {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(239, 68, 68, 0.2);
+  border-top: 4px solid rgba(239, 68, 68, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
